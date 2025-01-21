@@ -1,0 +1,8 @@
+{# menu/default.html #}
+{% if menu %}
+    {% include template %}
+{% else %}
+    <div style="color: red; text-align: center; padding: 20px;">
+        <p>The menu with the specified slug does not exist or cannot be loaded.</p>
+    </div>
+{% endif %}
