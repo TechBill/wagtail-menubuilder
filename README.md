@@ -185,3 +185,12 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support This Project 💖
+
+If you find this project helpful, consider supporting my work:
+
+- [💸 Donate via PayPal](https://paypal.me/techbill?country.x=US&locale.x=en_US)
+- [☕ Buy Me a Coffee](https://www.buymeacoffee.com/techbill)
+
+Your support helps me maintain and improve this project. Thank you! 🙏
