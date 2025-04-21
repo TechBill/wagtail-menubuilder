@@ -32,7 +32,7 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
    pip install wagtail-menubuilder
    ```
 
-2. Add `menubuilder` to your `INSTALLED_APPS` in `settings.py`:
+2. Add `wagtail_menubuilder` to your `INSTALLED_APPS` in `settings.py`:
 
    ```python
    INSTALLED_APPS = [
@@ -40,7 +40,7 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
        'wagtail.admin',
        'wagtail.core',
        ...
-       'menubuilder',
+       'wagtail_menubuilder',
        ...
    ]
    ```
@@ -48,7 +48,7 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
 3. Run migrations:
 
    ```bash
-   python manage.py migrate menubuilder
+   python manage.py migrate wagtail_menubuilder
    ```
 
 ---
@@ -165,7 +165,7 @@ You can create custom templates for your menus by using the following context va
 Then use your custom template:
 
 ```django
-{% render_menu "main-menu" template="menubuilder/custom-menu.html" %}
+{% render_menu "main-menu" template="wagtail_menubuilder/custom-menu.html" %}
 ```
 
 ---
