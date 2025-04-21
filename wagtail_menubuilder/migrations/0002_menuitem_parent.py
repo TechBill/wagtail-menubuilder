@@ -8,13 +8,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('menubuilder', '0001_initial'),
+        ('wagtail_menubuilder', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='menuitem',
             name='parent',
-            field=modelcluster.fields.ParentalKey(blank=True, help_text='Set a parent menu item to create a dropdown.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='menubuilder.menuitem'),
+            field=modelcluster.fields.ParentalKey(blank=True, help_text='Set a parent menu item to create a dropdown.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='wagtail_menubuilder.menuitem'),
         ),
     ]

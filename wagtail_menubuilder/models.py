@@ -3,6 +3,7 @@ from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from modelcluster.models import Orderable
 from wagtail.snippets.models import register_snippet
 
 @register_snippet
@@ -24,8 +25,8 @@ class Menu(ClusterableModel):
         return self.title
 
 
-class MenuItem(ClusterableModel):
-    menu = ParentalKey("menubuilder.Menu", on_delete=models.CASCADE, related_name="menu_items")
+class MenuItem(Orderable):
+    menu = ParentalKey("wagtail_menubuilder.Menu", on_delete=models.CASCADE, related_name="menu_items")
     parent = ParentalKey(
         "self",
         on_delete=models.CASCADE,
