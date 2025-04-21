@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('is_dropdown', models.BooleanField(default=False, help_text='Check if this item should have a dropdown menubuilder.')),
                 ('order', models.PositiveIntegerField(default=0, help_text='Menu item display order.')),
                 ('internal_link', models.ForeignKey(blank=True, help_text='Internal link to a page. Overrides external URL if set.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='menu_links', to='wagtailcore.page')),
-                ('menu', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='menu_items', to='menubuilder.menu')),
+                ('menu', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='menu_items', to='wagtail_menubuilder.menu')),
             ],
             options={
                 'ordering': ['order'],
