@@ -5,3 +5,30 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+venv/
+
+# Logs and temp files
+*.log
+*.bak
+*.swp
+*.tmp
+
+# Python tooling caches
+.cache/
+.mypy_cache/
+.pytest_cache/
+
+# Test and coverage outputs
+coverage.xml
+htmlcov/
+*.cover
+*.orig
+
+# Editor/IDE settings
+.idea/
+.vscode/
+
+# Environment files
+.env
+*.env
+*.secret

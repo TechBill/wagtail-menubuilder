@@ -1,6 +1,6 @@
 include LICENSE
 include README.md
-recursive-include menubuilder/templates *
-recursive-include menubuilder/migrations *
-recursive-include menubuilder/templatetags *
-recursive-include menubuilder/static *
+recursive-include wagtail_menubuilder/templates *
+recursive-include wagtail_menubuilder/migrations *
+recursive-include wagtail_menubuilder/templatetags *
+recursive-include wagtail_menubuilder/static *
