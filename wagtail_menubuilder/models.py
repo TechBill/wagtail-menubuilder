@@ -1,9 +1,9 @@
 from django.db import models
 from wagtail.models import Page
-from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from modelcluster.models import Orderable
+from modelcluster.fields import Orderable
 from wagtail.snippets.models import register_snippet
 
 @register_snippet
@@ -35,8 +35,8 @@ class MenuItem(Orderable):
         related_name="children",
         help_text="Set a parent menu item to create a dropdown.",
     )
-    title = models.CharField(max_length=255, help_text="Menu Item Title")
-    url = models.URLField(blank=True, null=True, help_text="External URL for this menu item. Leave blank if dropdown.")
+    title = models.CharField(max_length=255, blank=False, help_text="Menu Item Title") # Added blank=False
+    url = models.URLField(blank=True, null=True, help_text="External URL for this menu item. Leave blank if this is a dropdown parent.") # Updated help_text
     internal_link = models.ForeignKey(
         Page,
         on_delete=models.SET_NULL,
@@ -45,14 +45,14 @@ class MenuItem(Orderable):
         related_name="menu_links",
         help_text="Internal link to a page. Overrides external URL if set.",
     )
-    is_dropdown = models.BooleanField(default=False, help_text="Check if this item should have a dropdown menu.")
+    # is_dropdown field removed
     order = models.PositiveIntegerField(default=0, help_text="Menu item display order.")
 
     panels = [
         FieldPanel("title"),
         FieldPanel("url"),
-        FieldPanel("internal_link"),
-        FieldPanel("is_dropdown"),
+        PageChooserPanel("internal_link"), # Changed to PageChooserPanel
+        # is_dropdown panel removed
         FieldPanel("parent"),
         FieldPanel("order"),
     ]

@@ -90,7 +90,8 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
 
 ### Example: Using the `top-navbar.html` Template
 
-The package includes an example template, `top-navbar.html`, which demonstrates a responsive navigation bar.
+The package includes an example template, `wagtail_menubuilder/templates/menubuilder/top-navbar.html`, which demonstrates a responsive navigation bar.
+**Note:** This template is provided as a starting point. Its CSS and JavaScript are now in separate static files (`wagtail_menubuilder/static/menubuilder/css/top-navbar.css` and `js/top-navbar.js`) and should be included in your project's base template as shown below.
 
 #### Steps to Use `top-navbar.html`:
 
@@ -113,21 +114,25 @@ The package includes an example template, `top-navbar.html`, which demonstrates 
 
    The slug defined in the Menubuilder menu must match the name of the template file used to render it. For example:
 
-   - If the menu slug is `top-navbar`, you should create a file named `top-navbar.html` in your templates directory (e.g., `templates/menu/top-navbar.html`).
+   - If the menu slug is `top-navbar`, the `render_menu` tag will look for `wagtail_menubuilder/templates/menubuilder/top-navbar.html`. You can override this by creating your own `templates/wagtail_menubuilder/top-navbar.html` in your project.
 
-3. **Customize `top-navbar.html`**
+3. **Include Styles and Scripts**
 
-   - The file is located in your project’s `templates/menu/` directory.
-   - Modify the design, CSS, or structure to suit your needs.
-
-4. **Include Styles and Scripts**
-
-   Ensure the required CSS and JavaScript files are loaded in your base template:
+   Ensure the required CSS and JavaScript files (provided with the package) are loaded in your base template (`base.html`):
 
    ```html
-   <link rel="stylesheet" type="text/css" href="{% static 'css/top-navbar.css' %}">
-   <script type="text/javascript" src="{% static 'js/top-navbar.js' %}"></script>
+   {% load static %}
+   ...
+   <link rel="stylesheet" type="text/css" href="{% static 'menubuilder/css/top-navbar.css' %}">
+   ...
+   <script type="text/javascript" src="{% static 'menubuilder/js/top-navbar.js' %}"></script>
+   ...
    ```
+   *(Note: The paths assume your static files setup correctly collects files from `wagtail_menubuilder/static/`)*
+
+4. **(Optional) Customize `top-navbar.html`**
+
+   - If you need to modify the HTML structure, copy the template file from `wagtail_menubuilder/templates/menubuilder/top-navbar.html` into your project's template directory at `templates/wagtail_menubuilder/top-navbar.html` and edit it there. Django will automatically pick up your overridden version.
 
 ---
 
@@ -137,8 +142,8 @@ The package includes an example template, `top-navbar.html`, which demonstrates 
 
 You can create custom templates for your menus by using the following context variables:
 
-- `menu`: The menu object.
-- `menu_items`: List of menu items.
+- `menu`: The menu object (instance of `Menu`).
+- `visible_items`: List of top-level menu item objects (instances of `MenuItem`) that should be displayed (e.g., linked page is live, and if it was a parent, it has visible children). Each item object has a `visible_children` attribute containing a list of its processed child items.
 - `request`: The current request object.
 
 #### Example Custom Template
@@ -146,13 +151,13 @@ You can create custom templates for your menus by using the following context va
 ```html
 <nav class="custom-menu">
     <ul>
-        {% for item in menu_items %}
-            <li class="{% if item.active %}active{% endif %}">
-                <a href="{{ item.url }}">{{ item.title }}</a>
-                {% if item.children %}
+        {% for item in visible_items %} {# Use visible_items passed from the tag #}
+            <li class="{% if item.active %}active{% endif %}"> {# Note: 'active' class logic needs implementation based on request.path #}
+                <a href="{{ item.get_url }}">{{ item.title }}</a> {# Use get_url method #}
+                {% if item.visible_children %} {# Check for processed visible children #}
                     <ul class="submenu">
-                        {% for child in item.children %}
-                            <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                        {% for child in item.visible_children %}
+                            <li><a href="{{ child.get_url }}">{{ child.title }}</a></li> {# Use get_url method #}
                         {% endfor %}
                     </ul>
                 {% endif %}
