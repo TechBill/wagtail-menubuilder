@@ -1,8 +1,5 @@
-{# wagtail_menubuilder/templates/menubuilder/default.html #}
+{# wagtail_menubuilder/default.html – wrapper rendered by the render_menu tag #}
 {% if menu %}
     {% include template %}
-{% else %}
-    <div style="color: red; text-align: center; padding: 20px;">
-        <p>The menu with the specified slug does not exist or cannot be loaded.</p>
-    </div>
 {% endif %}
+{# Menu not found: render nothing. Check your slug or create the menu in Wagtail admin > Snippets > Menus. #}

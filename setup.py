@@ -12,6 +12,9 @@ setup(
         "wagtail>=6.0",
         "Django>=4.2",
     ],
+    extras_require={
+        "wagtail7": ["wagtail>=7.0", "Django>=4.2"],
+    },
     author="Bill Fleming",
     description="A flexible menu builder for Wagtail CMS",
     long_description=long_description,
@@ -23,7 +26,7 @@ setup(
         "Framework :: Wagtail",
         "Programming Language :: Python :: 3",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     project_urls={
         "Documentation": "https://github.com/TechBill/wagtail-menubuilder",
         "Source": "https://github.com/TechBill/wagtail-menubuilder",

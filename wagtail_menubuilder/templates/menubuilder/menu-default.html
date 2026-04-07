@@ -1,0 +1,210 @@
+{# wagtail_menubuilder/menu-default.html
+   Generic fallback navigation template.
+   Override by creating wagtail_menubuilder/<your-menu-slug>.html in your project.
+
+   Context variables available:
+     menu          – the Menu instance
+     visible_items – list of top-level MenuItem objects, each with:
+                       item.title
+                       item.get_url()
+                       item.visible_children  (list of child MenuItems, same shape)
+     request       – the current HttpRequest (may be None)
+#}
+<nav class="wm-nav" aria-label="{{ menu.title }}">
+  <ul class="wm-nav__list">
+
+    {% for item in visible_items %}
+    <li class="wm-nav__item{% if item.visible_children %} wm-nav__item--has-dropdown{% endif %}">
+
+      {% if item.visible_children %}
+        {# Parent item: render as a button that toggles the dropdown #}
+        <button
+          class="wm-nav__link wm-nav__toggle"
+          aria-expanded="false"
+          aria-haspopup="true"
+          type="button"
+        >
+          {{ item.title }}
+          <svg class="wm-nav__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" width="16" height="16">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <ul class="wm-nav__dropdown" role="menu">
+          {% if item.get_url != "#" %}
+          <li class="wm-nav__dropdown-item" role="none">
+            <a href="{{ item.get_url }}" class="wm-nav__dropdown-link" role="menuitem">
+              {{ item.title }}
+            </a>
+          </li>
+          {% endif %}
+          {% for child in item.visible_children %}
+          <li class="wm-nav__dropdown-item" role="none">
+            <a href="{{ child.get_url }}" class="wm-nav__dropdown-link" role="menuitem">
+              {{ child.title }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+
+      {% else %}
+        <a href="{{ item.get_url }}" class="wm-nav__link">{{ item.title }}</a>
+      {% endif %}
+
+    </li>
+    {% endfor %}
+
+  </ul>
+</nav>
+
+<style>
+  /* -----------------------------------------------------------------------
+     Wagtail MenuBuilder – generic fallback styles (wm-nav prefix)
+     These styles are scoped to .wm-nav so they won't clash with your own CSS.
+     Copy and override in your own stylesheet, or remove this block entirely.
+  ----------------------------------------------------------------------- */
+
+  .wm-nav {
+    font-family: inherit;
+  }
+
+  .wm-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .wm-nav__item {
+    position: relative;
+  }
+
+  .wm-nav__link,
+  .wm-nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    white-space: nowrap;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+  }
+
+  .wm-nav__link:hover,
+  .wm-nav__toggle:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+  }
+
+  .wm-nav__chevron {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .wm-nav__toggle[aria-expanded="true"] .wm-nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Dropdown */
+  .wm-nav__dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 0.25rem 0;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+
+  .wm-nav__item--has-dropdown:hover .wm-nav__dropdown,
+  .wm-nav__toggle[aria-expanded="true"] + .wm-nav__dropdown {
+    display: block;
+  }
+
+  .wm-nav__dropdown-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+
+  .wm-nav__dropdown-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Mobile – stack vertically below 768 px */
+  @media (max-width: 768px) {
+    .wm-nav__list {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .wm-nav__dropdown {
+      position: static;
+      box-shadow: none;
+      border: none;
+      border-left: 3px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0;
+      margin: 0;
+      padding-left: 0.5rem;
+    }
+
+    .wm-nav__item--has-dropdown:hover .wm-nav__dropdown {
+      display: none; /* hover doesn't work on touch; rely on toggle button */
+    }
+
+    .wm-nav__toggle[aria-expanded="true"] + .wm-nav__dropdown {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    // Toggle dropdowns via the button (keyboard + touch friendly)
+    document.querySelectorAll(".wm-nav__toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var expanded = btn.getAttribute("aria-expanded") === "true";
+        // Close all other open dropdowns in this nav first
+        btn.closest(".wm-nav__list").querySelectorAll(".wm-nav__toggle[aria-expanded='true']").forEach(function (other) {
+          if (other !== btn) other.setAttribute("aria-expanded", "false");
+        });
+        btn.setAttribute("aria-expanded", String(!expanded));
+      });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".wm-nav__item--has-dropdown")) {
+        document.querySelectorAll(".wm-nav__toggle[aria-expanded='true']").forEach(function (btn) {
+          btn.setAttribute("aria-expanded", "false");
+        });
+      }
+    });
+
+    // Close dropdowns on Escape
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        document.querySelectorAll(".wm-nav__toggle[aria-expanded='true']").forEach(function (btn) {
+          btn.setAttribute("aria-expanded", "false");
+          btn.focus();
+        });
+      }
+    });
+  })();
+</script>

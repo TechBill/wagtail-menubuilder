@@ -12,15 +12,15 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
 - Automatic page link updates when pages are moved
 - Custom template support
 - Built-in templates for common menu types (e.g., top navigation, footer)
-- Wagtail 6.0+ compatible
+- Wagtail 6.0+ and 7.0+ compatible
 
 ---
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - Django 4.2+
-- Wagtail 6.0+
+- Wagtail 6.0+ or 7.0+
 
 ---
 
@@ -38,7 +38,6 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
    INSTALLED_APPS = [
        ...
        'wagtail.admin',
-       'wagtail.core',
        ...
        'wagtail_menubuilder',
        ...
@@ -59,8 +58,8 @@ A flexible and easy-to-use menu management system for Wagtail CMS that allows yo
 
 1. Access the **Wagtail Admin Panel**.
 2. Navigate to **Snippets** in the left sidebar.
-3. Click on **Menubuilder**.
-4. Click **Add Menubuilder** to create a new menu.
+3. Click on **Menus**.
+4. Click **Add Menu** to create a new menu.
 
 ### 2. Menu Configuration
 
@@ -151,13 +150,13 @@ You can create custom templates for your menus by using the following context va
 ```html
 <nav class="custom-menu">
     <ul>
-        {% for item in visible_items %} {# Use visible_items passed from the tag #}
-            <li class="{% if item.active %}active{% endif %}"> {# Note: 'active' class logic needs implementation based on request.path #}
-                <a href="{{ item.get_url }}">{{ item.title }}</a> {# Use get_url method #}
-                {% if item.visible_children %} {# Check for processed visible children #}
+        {% for item in visible_items %}
+            <li>
+                <a href="{{ item.get_url }}">{{ item.title }}</a>
+                {% if item.visible_children %}
                     <ul class="submenu">
                         {% for child in item.visible_children %}
-                            <li><a href="{{ child.get_url }}">{{ child.title }}</a></li> {# Use get_url method #}
+                            <li><a href="{{ child.get_url }}">{{ child.title }}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -167,10 +166,12 @@ You can create custom templates for your menus by using the following context va
 </nav>
 ```
 
-Then use your custom template:
+Name the template file after the menu's slug — for a menu with slug `main-menu` the tag
+automatically looks for `wagtail_menubuilder/main-menu.html`. Place the file in your project's
+`templates/wagtail_menubuilder/` directory and Django will pick it up automatically.
 
 ```django
-{% render_menu "main-menu" template="wagtail_menubuilder/custom-menu.html" %}
+{% render_menu "main-menu" %}
 ```
 
 ---
@@ -184,6 +185,12 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ---
 
