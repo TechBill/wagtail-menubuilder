@@ -13,7 +13,7 @@ class Menu(index.Indexed, ClusterableModel):
 
     panels = [
         FieldPanel("title"),
-        FieldPanel("slug", prepopulate_from="title"),
+        FieldPanel("slug"),
         InlinePanel("menu_items", label="Menu Items"),
     ]
 
@@ -36,7 +36,7 @@ class MenuItem(Orderable):
         on_delete=models.CASCADE,
         related_name="menu_items",
     )
-    parent = ParentalKey(
+    parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
         blank=True,
