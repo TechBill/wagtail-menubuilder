@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 from wagtail.models import Orderable, Page
@@ -30,7 +31,24 @@ class Menu(index.Indexed, ClusterableModel):
         return self.title
 
 
+class MenuItemAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "parent" in self.fields:
+            if self.instance and self.instance.pk and self.instance.menu_id:
+                self.fields["parent"].queryset = MenuItem.objects.filter(
+                    menu_id=self.instance.menu_id
+                ).exclude(pk=self.instance.pk)
+            else:
+                self.fields["parent"].queryset = MenuItem.objects.none()
+            self.fields["parent"].empty_label = "— None (top-level item) —"
+            self.fields["parent"].help_text = (
+                "Save the menu first, then edit items individually to assign a parent."
+            )
+
+
 class MenuItem(Orderable):
+    base_form_class = MenuItemAdminForm
     menu = ParentalKey(
         "wagtail_menubuilder.Menu",
         on_delete=models.CASCADE,
@@ -74,8 +92,11 @@ class MenuItem(Orderable):
             if self.pk and self.parent_id == self.pk:
                 raise ValidationError({"parent": "A menu item cannot be its own parent."})
 
-            # Prevent cross-menu parent assignment
-            if self.parent.menu_id != self.menu_id:
+            # Prevent cross-menu parent assignment.
+            # self.menu_id may be None for new inline items (modelcluster holds the
+            # relation in memory before the first save), so only validate when both
+            # sides have a known PK.
+            if self.menu_id and self.parent.menu_id and self.parent.menu_id != self.menu_id:
                 raise ValidationError({"parent": "Parent item must belong to the same menu."})
 
             # Prevent circular reference chains (e.g. A → B → A)
