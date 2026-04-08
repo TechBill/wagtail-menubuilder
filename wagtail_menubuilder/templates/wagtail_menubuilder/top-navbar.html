@@ -1,0 +1,63 @@
+{# wagtail_menubuilder/top-navbar.html
+   Horizontal top navigation bar with mobile hamburger toggle.
+   Requires: static/menubuilder/css/top-navbar.css
+             static/menubuilder/js/top-navbar.js
+
+   Context variables:
+     menu          – Menu instance
+     visible_items – top-level MenuItems, each with .get_url() and .visible_children
+     request       – current HttpRequest
+#}
+<nav class="main-nav" aria-label="{{ menu.title }}">
+  <div class="nav-container">
+
+    <a href="/" class="logo">
+      <span class="logo-text">Logo</span>
+    </a>
+
+    <button
+      id="wm-hamburger"
+      type="button"
+      class="mobile-menu-button"
+      aria-controls="wm-nav-menu"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+      </svg>
+    </button>
+
+    <div class="nav-menu" id="wm-nav-menu">
+      <ul class="nav-list">
+        {% for item in visible_items %}
+        <li class="nav-item{% if item.visible_children %} has-dropdown{% endif %}">
+          {% if item.visible_children %}
+            <button
+              class="nav-link nav-dropdown-toggle"
+              aria-expanded="false"
+              aria-haspopup="true"
+              type="button"
+            >{{ item.title }}</button>
+            <ul class="dropdown-menu" role="menu">
+              {% if item.get_url != "#" %}
+              <li class="dropdown-item" role="none">
+                <a href="{{ item.get_url }}" class="dropdown-link" role="menuitem">{{ item.title }}</a>
+              </li>
+              {% endif %}
+              {% for child in item.visible_children %}
+              <li class="dropdown-item" role="none">
+                <a href="{{ child.get_url }}" class="dropdown-link" role="menuitem">{{ child.title }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <a href="{{ item.get_url }}" class="nav-link">{{ item.title }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+</nav>

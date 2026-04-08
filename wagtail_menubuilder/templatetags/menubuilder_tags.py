@@ -74,6 +74,8 @@ def render_menu(context, menu_slug):
         f"wagtail_menubuilder/{menu_slug}.html",
         "wagtail_menubuilder/menu-default.html",
     ])
+    # Note: to override for a specific menu slug, create:
+    # <your_app>/templates/wagtail_menubuilder/<slug>.html
 
     result = {
         "menu": menu,

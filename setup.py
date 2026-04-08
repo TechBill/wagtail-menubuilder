@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="wagtail-menubuilder",
-    version="0.2.1",
+    version="0.2.3",
     packages=find_packages(include=["wagtail_menubuilder", "wagtail_menubuilder.*"]),
     include_package_data=True,
     install_requires=[
